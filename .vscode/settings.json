@@ -1,7 +1,11 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit",
-    "source.organizeImports": "explicit",
-    "source.sortMembers": "explicit"
-  }
+  "workbench.colorCustomizations": {
+    "commandCenter.border": "#15202b99",
+    "sash.hoverBorder": "#e4c2b5",
+    "titleBar.activeBackground": "#d7a38f",
+    "titleBar.activeForeground": "#15202b",
+    "titleBar.inactiveBackground": "#d7a38f99",
+    "titleBar.inactiveForeground": "#15202b99"
+  },
+  "peacock.color": "#d7a38f"
 }

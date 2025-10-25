@@ -2,12 +2,34 @@
 
 # dependencies
 node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# env / secrets
+.env
+.env.*
 
 # Expo
 .expo/
+.expo-shared/
 dist/
 web-build/
 expo-env.d.ts
+web-build/
+*.apk
+*.aab
+
+# logs & caches
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.expo/*
+.bundle/
+.expo-dev-cache/
+.expo-web-cache/
+*.log
+
 
 # Native
 .kotlin/
@@ -41,3 +63,11 @@ app-example
 # generated native folders
 /ios
 /android
+
+# vscode settings
+.vscode/
+
+# os/editor
+.DS_Store
+Thumbs.db
+.idea/
