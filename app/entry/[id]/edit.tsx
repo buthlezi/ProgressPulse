@@ -1,28 +1,38 @@
 import { View, Text, TextInput, Pressable } from "react-native";
+import { useLocalSearchParams, router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { getEntry, updateEntry } from "../../../lib/store";
+import { colors } from "../../../lib/colors";
 import { useState } from "react";
-import { colors } from "../../lib/colors";
-import { addEntry } from "@/lib/store";
 
-export default function NewEntry() {
+export default function EditEntry() {
+  const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
-  const [text, setText] = useState("");
+  const entry = id ? getEntry(id) : undefined;
+  const [text, setText] = useState(entry?.text ?? "");
 
-  const saveEntry  = () => {
+  if (!entry) {
+    return (
+      <View style={{ flex: 1, paddingTop: insets.top, paddingHorizontal: 16, justifyContent: "center" }}>
+        <Text style={{ textAlign: "center", color: colors.muted }}>Entry not found.</Text>
+      </View>
+    );
+  }
+
+  const saveEntry = () => {
     const textItem = text.trim();
     if (!textItem) return;
-     addEntry(textItem);
-    router.replace("/"); // go back to home page
+    updateEntry(entry.id, textItem);
+    router.replace('/'); // go back to home
   };
 
   return (
     <View style={{ flex: 1, paddingTop: insets.top, paddingHorizontal: 16, gap: 12, backgroundColor: colors.pageBg }}>
-      <Text style={{ fontSize: 18, fontWeight: "600" }}>What’s your update?</Text>
+      <Text style={{ fontSize: 18, fontWeight: "600" }}>Edit entry</Text>
       <TextInput
         value={text}
         onChangeText={setText}
-        placeholder="Type something…"
+        placeholder="Update text…"
         multiline
         style={{ minHeight: 120, borderWidth: 1, borderColor: colors.border, borderRadius: 12, padding: 12, backgroundColor: "#fff" }}
       />
