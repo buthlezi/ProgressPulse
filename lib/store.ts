@@ -11,7 +11,7 @@ export function addEntry(text: string): Entry {
 }
 
 export function getEntry(id: string): Entry | undefined {
-  return entries.find(entry => entry.id === id);
+  return entries.find((entry) => entry.id === id);
 }
 
 export function getAll(): Entry[] {
@@ -19,9 +19,9 @@ export function getAll(): Entry[] {
 }
 
 export function removeEntry(id: string) {
-  entries = entries.filter(entry => entry.id !== id);
+  entries = entries.filter((entry) => entry.id !== id);
 }
 
 export function updateEntry(id: string, text: string) {
-  entries = entries.map(entry => (entry.id === id ? { ...entry, text } : entry));
+  entries = entries.map((entry) => (entry.id === id ? { ...entry, text } : entry));
 }
