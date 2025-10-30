@@ -3,11 +3,13 @@ import { Link, useFocusEffect } from 'expo-router';
 import { Text, View, Pressable, FlatList } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCallback, useState } from 'react';
-import { getAll, type Entry } from '../lib/store';
-import { colors } from '../lib/colors';
+import { getAll, Entry } from '../lib/store';
+import { useThemeColors } from '@/lib/context/ThemeContext';
+// import { colors } from '../lib/themes';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
+  const colors = useThemeColors();
   const [entries, setEntries] = useState<Entry[]>([]);
 
   const refresh = useCallback(() => setEntries(getAll()), []);
@@ -77,7 +79,7 @@ export default function HomeScreen() {
         <Pressable
           style={{
             padding: 14,
-            backgroundColor: '#4F46E5',
+            backgroundColor: colors.primary,
             borderRadius: 10,
             alignItems: 'center',
             marginBottom: insets.bottom || 12,

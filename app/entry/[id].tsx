@@ -2,11 +2,13 @@ import { View, Text, Pressable, Alert } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getEntry, removeEntry } from '../../lib/store';
-import { colors } from '../../lib/colors';
+// import { colors } from '../../lib/themes';
+import { useThemeColors } from '@/lib/context/ThemeContext';
 
 export default function EntryDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
+  const colors = useThemeColors();
   const entry = id ? getEntry(id) : undefined;
 
   if (!entry) {

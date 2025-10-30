@@ -8,12 +8,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { HeaderHeightProvider, useHeaderHeight } from '../lib/context/HeaderHeightContext';
 import { DrawerProvider, useDrawer } from '../lib/drawer';
 import SideDrawer from '../components/SideDrawer';
-import { colors } from '../lib/colors';
+// import { colors } from '../lib/themes';
+import { ThemeProvider, useThemeColors } from '../lib/context/ThemeContext';
 
 function AppHeader({ title = 'ProgressPulse' }: { title?: string }) {
   const insets = useSafeAreaInsets();
   const { setHeaderHeight } = useHeaderHeight();
   const { toggle } = useDrawer();
+  const colors = useThemeColors();
 
   return (
     <View
@@ -47,16 +49,18 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <StatusBar style="light" />
-      <HeaderHeightProvider>
-        <DrawerProvider>
-          <Stack
-            screenOptions={{
-              header: () => <AppHeader />,
-            }}
-          />
-          <SideDrawer />
-        </DrawerProvider>
-      </HeaderHeightProvider>
+      <ThemeProvider>
+        <HeaderHeightProvider>
+          <DrawerProvider>
+            <Stack
+              screenOptions={{
+                header: () => <AppHeader />,
+              }}
+            />
+            <SideDrawer />
+          </DrawerProvider>
+        </HeaderHeightProvider>
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }

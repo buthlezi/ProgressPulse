@@ -2,8 +2,9 @@ import { useEffect, useRef } from 'react';
 import { Animated, Dimensions, Pressable, StyleSheet, View, Text } from 'react-native';
 import { router } from 'expo-router';
 import { useDrawer } from '../lib/drawer';
-import { colors } from '../lib/colors';
+// import { colors } from '../lib/themes';
 import { useHeaderHeight } from '../lib/context/HeaderHeightContext';
+import { useThemeColors } from '../lib/context/ThemeContext';
 
 const { width: windowWidth } = Dimensions.get('window');
 
@@ -11,8 +12,9 @@ const WIDTH = Math.min(150, Math.round(windowWidth * 0.8));
 
 export default function SideDrawer() {
   const { headerHeight } = useHeaderHeight();
-  const TOP = Math.round(headerHeight) - StyleSheet.hairlineWidth;
 
+  const TOP = Math.round(headerHeight) - StyleSheet.hairlineWidth;
+  const colors = useThemeColors();
   const { open, close } = useDrawer();
   const translatedOnX = useRef(new Animated.Value(-WIDTH)).current;
   const opacity = useRef(new Animated.Value(0)).current;

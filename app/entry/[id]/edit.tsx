@@ -2,13 +2,15 @@ import { View, Text, TextInput, Pressable } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getEntry, updateEntry } from '../../../lib/store';
-import { colors } from '../../../lib/colors';
+// import { colors } from '../../../lib/themes';
 import { useState } from 'react';
+import { useThemeColors } from '@/lib/context/ThemeContext';
 
 export default function EditEntry() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const entry = id ? getEntry(id) : undefined;
+  const colors = useThemeColors();
   const [text, setText] = useState(entry?.text ?? '');
 
   if (!entry) {

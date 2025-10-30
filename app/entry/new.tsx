@@ -2,12 +2,14 @@ import { View, Text, TextInput, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { colors } from '../../lib/colors';
-import { addEntry } from '@/lib/store';
+// import { colors } from '../../lib/themes';
+import { addEntry } from '../../lib/store';
+import { useThemeColors } from '../../lib/context/ThemeContext';
 
 export default function NewEntry() {
-  const insets = useSafeAreaInsets();
   const [text, setText] = useState('');
+  const insets = useSafeAreaInsets();
+  const colors = useThemeColors();
 
   const saveEntry = () => {
     const textItem = text.trim();
