@@ -1,12 +1,12 @@
 // import React, { useState } from 'react';
 import { View, Text, Pressable, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useTheme, useThemeColors } from '../lib/context/ThemeContext';
+import { useTheme, useThemeColors } from '../lib/context/ThemeProviderContext';
 import { THEMES, ThemeName } from '../lib/themes';
 // import { colors } from '../lib/themes';
 
 export default function Settings() {
-  const { theme: themeName, setThemeName } = useTheme();
+  const { theme: themeName, setThemeName, isReady } = useTheme();
   const insets = useSafeAreaInsets();
   const colors = useThemeColors();
 
@@ -51,9 +51,14 @@ export default function Settings() {
           <Text style={{ fontWeight: '600', marginBottom: 4 }}>Theme</Text>
 
           {themes.map((theme) => (
-            <Pressable key={theme} onPress={() => handleThemeSelect(theme as ThemeName)}>
+            <Pressable
+              key={theme}
+              disabled={!isReady}
+              onPress={() => handleThemeSelect(theme as ThemeName)}
+            >
               <Text
                 style={{
+                  opacity: isReady ? 1 : 0.5,
                   color: theme === themeName ? colors.primary : colors.muted,
                   fontWeight: theme === themeName ? '600' : '400',
                 }}

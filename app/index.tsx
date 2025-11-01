@@ -4,7 +4,7 @@ import { Text, View, Pressable, FlatList } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCallback, useState } from 'react';
 import { getAll, Entry } from '../lib/store';
-import { useThemeColors } from '@/lib/context/ThemeContext';
+import { useThemeColors } from '../lib/context/ThemeProviderContext';
 // import { colors } from '../lib/themes';
 
 export default function HomeScreen() {

@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 // import { colors } from '../../lib/themes';
 import { addEntry } from '../../lib/store';
-import { useThemeColors } from '../../lib/context/ThemeContext';
+import { useThemeColors } from '../../lib/context/ThemeProviderContext';
 
 export default function NewEntry() {
   const [text, setText] = useState('');

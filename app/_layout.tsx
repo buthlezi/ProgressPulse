@@ -9,7 +9,7 @@ import { HeaderHeightProvider, useHeaderHeight } from '../lib/context/HeaderHeig
 import { DrawerProvider, useDrawer } from '../lib/drawer';
 import SideDrawer from '../components/SideDrawer';
 // import { colors } from '../lib/themes';
-import { ThemeProvider, useThemeColors } from '../lib/context/ThemeContext';
+import { ThemeProviderContext, useThemeColors } from '../lib/context/ThemeProviderContext';
 
 function AppHeader({ title = 'ProgressPulse' }: { title?: string }) {
   const insets = useSafeAreaInsets();
@@ -49,7 +49,7 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <StatusBar style="light" />
-      <ThemeProvider>
+      <ThemeProviderContext>
         <HeaderHeightProvider>
           <DrawerProvider>
             <Stack
@@ -60,7 +60,7 @@ export default function RootLayout() {
             <SideDrawer />
           </DrawerProvider>
         </HeaderHeightProvider>
-      </ThemeProvider>
+      </ThemeProviderContext>
     </SafeAreaProvider>
   );
 }

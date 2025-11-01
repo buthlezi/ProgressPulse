@@ -3,7 +3,7 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getEntry, removeEntry } from '../../lib/store';
 // import { colors } from '../../lib/themes';
-import { useThemeColors } from '@/lib/context/ThemeContext';
+import { useThemeColors } from '../../lib/context/ThemeProviderContext';
 
 export default function EntryDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();

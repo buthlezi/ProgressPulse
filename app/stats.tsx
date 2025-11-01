@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 // import { colors } from '../lib/themes';
-import { useThemeColors } from '../lib/context/ThemeContext';
+import { useThemeColors } from '../lib/context/ThemeProviderContext';
 
 export default function Stats() {
   const insets = useSafeAreaInsets();

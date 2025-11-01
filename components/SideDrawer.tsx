@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { useDrawer } from '../lib/drawer';
 // import { colors } from '../lib/themes';
 import { useHeaderHeight } from '../lib/context/HeaderHeightContext';
-import { useThemeColors } from '../lib/context/ThemeContext';
+import { useThemeColors } from '../lib/context/ThemeProviderContext';
 
 const { width: windowWidth } = Dimensions.get('window');
 
