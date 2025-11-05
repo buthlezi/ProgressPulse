@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { THEMES, ThemeName } from '../themes';
-// import * as SecureStore from 'expo-secure-store';
 import { storage } from '../../lib/storage';
 
 const STORAGE_KEY = 'pp.theme.v1';
