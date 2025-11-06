@@ -1,93 +1,49 @@
-// app/index.tsx (cleaned for drawer)
-import { Link, useFocusEffect } from 'expo-router';
-import { Text, View, Pressable, FlatList } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useCallback, useState } from 'react';
-import { getAll, Entry } from '../lib/store';
-import { useThemeColors } from '../lib/context/ThemeProviderContext';
-// import { colors } from '../lib/themes';
+// app/index.tsx (Home)
+import { useEffect, useState } from 'react';
+import { View, Text, Button, FlatList } from 'react-native';
+import { initDb } from '../lib/db';
+import { listEntries, addEntry, Entry } from '../lib/entries';
+import { Link } from 'expo-router';
+// import { useThemeColors } from '../lib/context/ThemeProviderContext';
 
-export default function HomeScreen() {
-  const insets = useSafeAreaInsets();
-  const colors = useThemeColors();
+export default function Home() {
   const [entries, setEntries] = useState<Entry[]>([]);
+  // const colors = useThemeColors();
 
-  const refresh = useCallback(() => setEntries(getAll()), []);
-  useFocusEffect(
-    useCallback(() => {
-      refresh();
-    }, [refresh]),
-  );
+  useEffect(() => {
+    (async () => {
+      await initDb();
+      setEntries(await listEntries());
+    })();
+  }, []);
+
+  const addDemo = async () => {
+    const id = await addEntry(
+      'First ProgressPulse entry ✨',
+      new Date().toISOString().slice(0, 10),
+    );
+    setEntries(await listEntries());
+    console.log('Inserted id', id);
+  };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        paddingTop: insets.top,
-        paddingHorizontal: 16,
-        gap: 16,
-        backgroundColor: colors.pageBg,
-      }}
-    >
-      <Text style={{ fontSize: 24, fontWeight: '700', marginTop: 8 }}>Your Progress</Text>
-      <Text style={{ color: '#64748B' }}>Capture quick entries and see your momentum.</Text>
-
-      {entries.length === 0 ? (
-        <View
-          style={{
-            flex: 1,
-            borderWidth: 1,
-            borderColor: '#E2E8F0',
-            borderStyle: 'dashed',
-            borderRadius: 12,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Text style={{ color: '#64748B' }}>No entries yet</Text>
-        </View>
-      ) : (
-        <FlatList
-          data={entries}
-          keyExtractor={(e) => e.id}
-          contentContainerStyle={{ paddingBottom: 12 }}
-          renderItem={({ item: entry }) => (
-            <Link href={`/entry/${entry.id}`} asChild>
-              <Pressable
-                style={{
-                  padding: 12,
-                  borderWidth: 1,
-                  borderColor: '#E2E8F0',
-                  borderRadius: 12,
-                  marginBottom: 10,
-                  backgroundColor: '#fff',
-                }}
-              >
-                <Text style={{ fontWeight: '600' }}>
-                  {entry.text.split('\n')[0].slice(0, 60) || 'Entry'}
-                </Text>
-                <Text style={{ color: '#64748B', marginTop: 4 }}>
-                  {new Date(entry.createdAt).toLocaleString()}
-                </Text>
-              </Pressable>
-            </Link>
-          )}
-        />
-      )}
-
-      <Link href="/entry/new" asChild>
-        <Pressable
-          style={{
-            padding: 14,
-            backgroundColor: colors.primary,
-            borderRadius: 10,
-            alignItems: 'center',
-            marginBottom: insets.bottom || 12,
-          }}
-        >
-          <Text style={{ color: '#FFFFFF', fontWeight: '600' }}>Add Entry</Text>
-        </Pressable>
-      </Link>
+    <View style={{ padding: 16 }}>
+      <Text style={{ fontSize: 20, fontWeight: '600' }}>Your Progress</Text>
+      <Button title="Add demo entry" onPress={addDemo} />
+      <FlatList
+        style={{ marginTop: 12 }}
+        data={entries}
+        keyExtractor={(entry) => entry.id}
+        contentContainerStyle={{ paddingBottom: 12 }}
+        renderItem={({ item }) => (
+          <View style={{ paddingVertical: 10 }}>
+            <Text>{item.text}</Text>
+            <Text style={{ opacity: 0.6 }}>{item.date}</Text>
+          </View>
+        )}
+        ListEmptyComponent={<Text style={{ marginTop: 16, opacity: 0.6 }}>No entries yet</Text>}
+      />
+      <Link href="/entry/new">+ Add Entry</Link>
     </View>
   );
 }
