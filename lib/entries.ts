@@ -1,6 +1,6 @@
 // lib/entries.ts
 import 'react-native-get-random-values';
-import { v4 as uuid } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { all, run } from './db';
 
 export type Entry = {
@@ -16,7 +16,7 @@ export type Entry = {
 const nowISO = () => new Date().toISOString();
 
 export async function addEntry(text: string, dateISO: string) {
-  const id = uuid();
+  const id = uuidv4();
   const ts = nowISO();
   await run(
     `INSERT INTO entries (id, text, date, createdAt, updatedAt, deletedAt, isDirty)
@@ -50,4 +50,19 @@ export async function softDeleteEntry(id: string) {
     ts,
     id,
   ]);
+}
+
+// how many rows are in the entries table
+export async function getEntryCount(): Promise<number> {
+  const rows = await all<{ count: number }>(
+    `SELECT COUNT(*) AS count FROM entries WHERE deletedAt IS NULL;`,
+  );
+  console.log('getEntryCount - rows', rows);
+  return rows?.[0]?.count ?? 0;
+}
+
+
+// nuke all rows (dev helper)
+export async function clearAllEntries(): Promise<void> {
+  await run(`DELETE FROM entries;`);
 }

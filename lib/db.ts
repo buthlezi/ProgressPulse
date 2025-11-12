@@ -2,8 +2,8 @@
 import * as SQLite from 'expo-sqlite';
 
 const DB_NAME = 'progresspulse.db';
-
 let dbPromise: Promise<SQLite.SQLiteDatabase> | null = null;
+
 export function getDb() {
   if (!dbPromise) dbPromise = SQLite.openDatabaseAsync(DB_NAME); // new API
   return dbPromise;

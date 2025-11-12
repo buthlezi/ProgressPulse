@@ -1,50 +1,155 @@
-# Welcome to your Expo app 👋
+# 📱 ProgressPulse
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**A minimalist, offline-first habit and learning tracker built with React Native and Expo.**  
+Track your daily progress, maintain streaks, and visualize your growth — even when you’re offline.
 
-## Get started
+---
 
-1. Install dependencies
+## 🖼️ App Preview
 
-   ```bash
-   npm install
-   ```
+<p align="center">
+  <img src="./assets/screens/home.png" width="250" alt="ProgressPulse Home" />
+  <img src="./assets/screens/new-entry.png" width="250" alt="Add New Entry" />
+  <img src="./assets/screens/entry-detail.png" width="250" alt="Entry Detail" />
+</p>
 
-2. Start the app
+*(Screenshots from Android emulator — captured November 2025)*
 
-   ```bash
-   npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+## 🎯 Overview
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+ProgressPulse helps learners and professionals build consistency through daily updates.  
+It focuses on simplicity and momentum — quick entries, clear streaks, and smart reminders.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### ✨ Key Features
+- 🏠 **Home Dashboard** – view your latest progress and streaks  
+- ✍️ **Add / Edit / Delete Entries** – track what matters every day  
+- 💾 **Offline-first** – all data stored locally using SQLite  
+- 🔐 **Secure User ID** – handled via Expo SecureStore  
+- 🔔 **Notifications** *(coming soon)* – gentle reminders to keep you consistent  
+- ☁️ **Cloud Sync (Planned)** – AWS Lambda + DynamoDB for multi-device use  
 
-## Get a fresh project
+---
 
-When you're ready, run:
+## 🧱 Tech Stack
 
-```bash
-npm run reset-project
+| Layer | Tools |
+|-------|-------|
+| **Frontend** | React Native · Expo · Expo Router · TypeScript |
+| **Storage** | Expo SQLite (local) · Expo SecureStore |
+| **Build & Deployment** | EAS Build · Android Studio |
+| **Backend (Phase 2)** | AWS Lambda · DynamoDB · API Gateway · Cognito (optional) |
+
+---
+
+## 📂 Project Structure
+
+```
+app/
+  _layout.tsx          # header + navigation layout
+  index.tsx            # Home screen
+  entry/
+    new.tsx            # New Entry screen
+    [id].tsx           # Entry Detail screen
+  stats.tsx            # Stats (upcoming)
+  settings.tsx         # Settings (upcoming)
+
+lib/
+  colors.ts            # Shared theme colors
+  entries.ts           # SQLite CRUD logic
+  userId.ts            # Secure user ID generation
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## 📸 Screens & Flow
 
-To learn more about developing your project with Expo, look at the following resources:
+**User Flow:**
+1. Home →  
+2. Add Entry →  
+3. Save →  
+4. Return to Home →  
+5. View Entry →  
+6. Edit or Delete  
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+**Screens Implemented (v0.1):**
+- ✅ Home  
+- ✅ Add New Entry  
+- ✅ Entry Details  
+- ⏳ Stats  
+- ⏳ Settings  
 
-## Join the community
+<p align="center">
+  <img src="./assets/screens/flow-diagram.png" width="600" alt="App Flow Diagram" />
+</p>
 
-Join our community of developers creating universal apps.
+---
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## ⚙️ Local Development
+
+### 1️⃣ Install dependencies
+```bash
+npm install
+```
+
+### 2️⃣ Run locally
+```bash
+npx expo start
+```
+
+### 3️⃣ Open in Android Studio (recommended)
+Since SecureStore isn’t supported in Expo Go, use a dev build:
+```bash
+npx expo run:android
+```
+
+---
+
+## 🧭 Development Journey
+
+| Phase | Milestone |
+|-------|------------|
+| ✅ | Created Expo app and verified build |
+| ✅ | Integrated SQLite for offline data |
+| ✅ | Added SecureStore for unique user IDs |
+| ✅ | Built CRUD entry system (add/edit/delete) |
+| 🧩 | Connected frontend logic to SQLite |
+| 🔜 | Add Notifications and Stats charts |
+| 🔜 | Cloud Sync with AWS Lambda + DynamoDB |
+
+---
+
+## 🧠 Lessons Learned
+
+- How to debug Expo SecureStore and dev builds  
+- How to verify SQLite tables via Android Studio AVD  
+- Structuring React Native apps for scalability  
+- Managing local persistence effectively  
+
+---
+
+## 🔮 Next Steps
+
+- 📊 Add streak charts (using `react-native-chart-kit`)  
+- ☁️ Implement AWS backend sync  
+- 🔔 Integrate daily reminder notifications  
+- 🧾 Export data (CSV / PDF)  
+- 🚀 Publish to Play Store (internal track first)
+
+---
+
+## 👤 About
+
+Built by **Fowell Whitfield (buthlezi)** — Software Engineer focused on building scalable, practical apps that help people learn, grow, and stay consistent.  
+Currently exploring the intersection of **mobile development** and **AI-driven productivity tools**.
+
+---
+
+## 🪪 License
+
+MIT License © 2025 Fowell Whitfield
+
+---
+
+> “Small daily progress adds up — ProgressPulse is built around that philosophy.”

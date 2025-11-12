@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { View, Text, Button, FlatList } from 'react-native';
 import { initDb } from '../lib/db';
-import { listEntries, addEntry, Entry } from '../lib/entries';
+import { addEntry, clearAllEntries, Entry, getEntryCount, listEntries } from '../lib/entries';
 import { Link } from 'expo-router';
 // import { useThemeColors } from '../lib/context/ThemeProviderContext';
 
@@ -30,6 +30,29 @@ export default function Home() {
     <View style={{ padding: 16 }}>
       <Text style={{ fontSize: 20, fontWeight: '600' }}>Your Progress</Text>
       <Button title="Add demo entry" onPress={addDemo} />
+
+      <View style={{ marginTop: 12, gap: 8 }}>
+        <Button
+          title="Count entries"
+          onPress={async () => {
+            const count = await getEntryCount();
+            console.log('[entries] count =', count);
+            alert(`Entries in DB: ${count}`);
+          }}
+        />
+
+        <Button
+          title="Clear all entries"
+          color="#c62828"
+          onPress={async () => {
+            await clearAllEntries();
+            const fresh = await listEntries();
+            setEntries(fresh);
+            alert('All entries deleted.');
+          }}
+        />
+      </View>
+
       <FlatList
         style={{ marginTop: 12 }}
         data={entries}
