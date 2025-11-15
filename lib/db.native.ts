@@ -33,4 +33,22 @@ export async function initDb() {
       isDirty INTEGER NOT NULL
     );
   `);
+
+  // Simple migrations: add version + deleted if they don’t exist yet
+  // SQLite: existing rows get DEFAULT value when adding NOT NULL + DEFAULT.
+  await db
+    .execAsync(
+      `
+    ALTER TABLE entries ADD COLUMN version INTEGER NOT NULL DEFAULT 1;
+  `,
+    )
+    .catch(() => {});
+
+  await db
+    .execAsync(
+      `
+    ALTER TABLE entries ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0;
+  `,
+    )
+    .catch(() => {});
 }

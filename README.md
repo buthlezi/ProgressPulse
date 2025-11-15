@@ -7,10 +7,16 @@ Track your daily progress, maintain streaks, and visualize your growth — even 
 
 ## 🖼️ App Preview
 
-<p align="center">
+<!-- <p align="center">
   <img src="./assets/screens/home.png" width="250" alt="ProgressPulse Home" />
   <img src="./assets/screens/stats.png" width="250" alt="ProgressPulse Statistics" />
   <img src="./assets/screens/settings.png" width="250" alt="ProgressPulse Settings" />
+</p> -->
+
+<p align="center">
+  <img src="./assets/screens/home_medium.png"  />
+  <img src="./assets/screens/stats_medium.png" />
+  <img src="./assets/screens/settings_medium.png" />
 </p>
 
 _(Screenshots from Android emulator — captured November 2025)_
