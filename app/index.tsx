@@ -2,7 +2,14 @@
 import { useEffect, useState } from 'react';
 import { View, Text, Button, FlatList } from 'react-native';
 import { initDb } from '../lib/db';
-import { addEntry, clearAllEntries, Entry, getEntryCount, listEntries } from '../lib/entries';
+import {
+  addEntry,
+  clearAllEntries,
+  Entry,
+  getEntryCount,
+  listEntries,
+  // syncEntries,
+} from '../lib/entries';
 import { Link } from 'expo-router';
 // import { useThemeColors } from '../lib/context/ThemeProviderContext';
 
@@ -25,6 +32,8 @@ export default function Home() {
     setEntries(await listEntries());
     console.log('Inserted id', id);
   };
+
+  // await syncEntries();
 
   return (
     <View style={{ padding: 16 }}>

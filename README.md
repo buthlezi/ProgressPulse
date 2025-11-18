@@ -14,9 +14,9 @@ Track your daily progress, maintain streaks, and visualize your growth — even 
 </p> -->
 
 <p align="center">
-  <img src="./assets/screens/home_medium.png"  />
-  <img src="./assets/screens/stats_medium.png" />
-  <img src="./assets/screens/settings_medium.png" />
+  <img src="./assets/screens/home_medium.png" width="250" alt="ProgressPulse Home"  />
+  <img src="./assets/screens/stats_medium.png" width="250" alt="ProgressPulse Stats"/>
+  <img src="./assets/screens/settings_medium.png" width="250" alt="ProgressPulse Settings"/>
 </p>
 
 _(Screenshots from Android emulator — captured November 2025)_
