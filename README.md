@@ -8,16 +8,42 @@ Track your daily progress, maintain streaks, and visualize your growth — even 
 ## 🖼️ App Preview
 
 <!-- <p align="center">
-  <img src="./assets/screens/home.png" width="250" alt="ProgressPulse Home" />
-  <img src="./assets/screens/stats.png" width="250" alt="ProgressPulse Statistics" />
-  <img src="./assets/screens/settings.png" width="250" alt="ProgressPulse Settings" />
-</p> -->
-
-<p align="center">
   <img src="./assets/screens/home_medium.png" width="250" alt="ProgressPulse Home"  />
   <img src="./assets/screens/stats_medium.png" width="250" alt="ProgressPulse Stats"/>
   <img src="./assets/screens/settings_medium.png" width="250" alt="ProgressPulse Settings"/>
+</p> -->
+
+<p align="center">
+  <a href="#" onclick="toggleImage('home')">Show Home Image</a>
+  <span id="home" style="display:none;">
+    <br>
+    <img src="./assets/screens/home_medium.png" width="250" alt="ProgressPulse Home" />
+  </span>
+  <br><br>
+  <a href="#" onclick="toggleImage('stats')">Show Stats Image</a>
+  <span id="stats" style="display:none;">
+    <br>
+    <img src="./assets/screens/stats_medium.png" width="250" alt="ProgressPulse Stats"/>
+  </span>
+  <br><br>
+  <a href="#" onclick="toggleImage('settings')">Show Settings Image</a>
+  <span id="settings" style="display:none;">
+    <br>
+    <img src="./assets/screens/settings_medium.png" width="250" alt="ProgressPulse Settings"/>
+  </span>
 </p>
+
+<script>
+function toggleImage(id) {
+  var elem = document.getElementById(id);
+  if (elem.style.display === "none") {
+    elem.style.display = "inline";
+  } else {
+    elem.style.display = "none";
+  }
+  return false; // Prevent default link behavior
+}
+</script>
 
 _(Screenshots from Android emulator — captured November 2025)_
 
