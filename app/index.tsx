@@ -8,9 +8,10 @@ import {
   Entry,
   getEntryCount,
   listEntries,
-  // syncEntries,
+  syncEntries,
 } from '../lib/entries';
 import { Link } from 'expo-router';
+import { SYNC_API_URL } from '../lib/config';
 // import { useThemeColors } from '../lib/context/ThemeProviderContext';
 
 export default function Home() {
@@ -21,6 +22,22 @@ export default function Home() {
     (async () => {
       await initDb();
       setEntries(await listEntries());
+    })();
+  }, []);
+
+  useEffect(() => {
+    // console.log('Sync API URL:', SYNC_API_URL);
+    if (!SYNC_API_URL) {
+      console.log('[sync] Skipping initial sync - backend not configured');
+      return;
+    }
+    console.log('Syncing...');
+    (async () => {
+      try {
+        await syncEntries();
+      } catch (error) {
+        console.warn('Initial sync failed', error);
+      }
     })();
   }, []);
 

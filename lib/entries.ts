@@ -2,6 +2,8 @@
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import { all, run } from './db';
+import { SYNC_API_URL } from './config';
+import { SyncChangePayload, SyncUpdatePayload, SyncResponse, SyncRequest } from './syncTypes';
 
 export type Entry = {
   id: string;
@@ -15,32 +17,7 @@ export type Entry = {
   deleted: 0 | 1;
 };
 
-// what is sent to the backend for each dirty entry
-export type EntrySyncPayload = {
-  id: string;
-  text: string;
-  date: string;
-  createdAt: string;
-  updatedAt: string;
-  deleted: boolean;
-  deletedAt: string | null;
-  version: number; // meaning: "my view of the row’s version"
-}
 
-// What the backend sends back for each updated entry
-
-export type SyncChangePayload = EntrySyncPayload;   // client → server
-export type SyncUpdatePayload = EntrySyncPayload;   // server → client canonical version
-
-export type SyncRequest = {
-  lastSyncAt: string | null;
-  changes: SyncChangePayload[];
-}
-
-export type SyncResponse = {
-  newLastSyncAt: string;
-  updates: SyncUpdatePayload[];
-}
 
 const nowISO = () => new Date().toISOString();
 
@@ -147,8 +124,7 @@ async function setLastSyncAt(lastSyncAt: string): Promise<void> {
 
 async function getDirtyEntries(): Promise<Entry[]> {
   const rows = await all<Entry>(
-    `SELECT * FROM entries
-     WHERE isDirty = 1;`,
+    `SELECT * FROM entries WHERE isDirty = 1;`,
   );
 
   return rows ?? [];
@@ -211,8 +187,6 @@ export async function clearAllEntries(): Promise<void> {
   await run(`DELETE FROM entries;`);
 }
 
-// TODO: replace with your real API base URL or import from config
-const SYNC_API_URL = 'https://your-api.example.com/sync';
 
 async function callSyncApi(body: SyncRequest): Promise<SyncResponse> {
   // Add auth headers here if needed (e.g. Authorization: Bearer <token>)
@@ -235,6 +209,11 @@ async function callSyncApi(body: SyncRequest): Promise<SyncResponse> {
 }
 
 export async function syncEntries(): Promise<void> {
+  // If backend is down/not configured, don't try to sync
+  if (!SYNC_API_URL) {
+    console.log('[sync] Skipping sync, SYNC_API_URL not configured');
+    return;
+  }
   // 1) Read lastSyncAt and dirty entries
   const lastSyncAt = await getLastSyncAt();
   const dirtyEntries = await getDirtyEntries();
@@ -257,7 +236,7 @@ export async function syncEntries(): Promise<void> {
   });
 
   // 3) Apply udates and update meta in a transaction-ish way
-  // it the run/all helper supports transactions, we can wrap this
+  // if the run/all helper supports transactions, we can wrap this
   for (const update of response.updates) {
     await upsertEntryFromServer(update);
   }
