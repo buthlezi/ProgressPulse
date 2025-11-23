@@ -17,8 +17,6 @@ export type Entry = {
   deleted: 0 | 1;
 };
 
-
-
 const nowISO = () => new Date().toISOString();
 
 export async function addEntry(text: string, dateISO: string) {
@@ -81,11 +79,8 @@ export async function softDeleteEntry(id: string) {
         isDirty = 1,
         version = version + 1
     WHERE id = ?;`,
-    [
-      timeStamp,
-      timeStamp,
-      id,
-    ]);
+    [timeStamp, timeStamp, id],
+  );
 }
 
 const SYNC_META_ID = 'entries';
@@ -107,7 +102,7 @@ async function getLastSyncAt(): Promise<string | null> {
   );
   if (!rows || rows.length === 0) {
     return null;
-  };
+  }
   return rows[0]?.lastSyncAt ?? null;
 }
 
@@ -123,9 +118,7 @@ async function setLastSyncAt(lastSyncAt: string): Promise<void> {
 }
 
 async function getDirtyEntries(): Promise<Entry[]> {
-  const rows = await all<Entry>(
-    `SELECT * FROM entries WHERE isDirty = 1;`,
-  );
+  const rows = await all<Entry>(`SELECT * FROM entries WHERE isDirty = 1;`);
 
   return rows ?? [];
 }
@@ -170,7 +163,6 @@ async function upsertEntryFromServer(update: SyncUpdatePayload) {
   // if (update.deleted) {
   //   await run(`DELETE FROM entries WHERE id = ?;`, [update.id]);
   // }
-
 }
 
 // how many rows are in the entries table
@@ -186,7 +178,6 @@ export async function getEntryCount(): Promise<number> {
 export async function clearAllEntries(): Promise<void> {
   await run(`DELETE FROM entries;`);
 }
-
 
 async function callSyncApi(body: SyncRequest): Promise<SyncResponse> {
   // Add auth headers here if needed (e.g. Authorization: Bearer <token>)
