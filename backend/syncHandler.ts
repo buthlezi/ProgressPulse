@@ -1,4 +1,4 @@
-import { SyncRequest, SyncResponse } from './../../lib/syncTypes';
+import { SyncRequest, SyncResponse } from '../lib/syncTypes';
 import { APIGatewayProxyHandlerV2 } from 'aws-lambda';
 import { applyClientChanges, getEntriesChangedSince } from './db';
 

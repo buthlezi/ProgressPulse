@@ -68,3 +68,7 @@ app-example
 .DS_Store
 Thumbs.db
 .idea/
+
+lambda-dist/
+lambda-upload/
+progresspulse-sync.zip

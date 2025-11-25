@@ -1,6 +1,6 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
-import { SyncChangePayload, SyncUpdatePayload } from '../../lib/syncTypes';
+import { SyncChangePayload, SyncUpdatePayload } from '../lib/syncTypes';
 
 const TABLE_NAME = process.env.ENTRIES_TABLE ?? 'ProgressPulseEntries';
 const client = new DynamoDBClient({});
