@@ -1,20 +1,32 @@
 // app/index.tsx (Home)
 import { useEffect, useState } from 'react';
-import { View, Text, Button, FlatList } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, FlatList } from 'react-native';
 import { initDb } from '../lib/db';
 import {
   addEntry,
-  clearAllEntries,
+  // clearAllEntries,
   Entry,
-  getEntryCount,
+  // getEntryCount,
   listEntries,
   syncEntries,
 } from '../lib/entries';
-import { Link } from 'expo-router';
-import { SYNC_API_URL } from '../lib/config';
+// import { Link } from 'expo-router';
+import { SYNC_ENDPOINT } from '../lib/config';
 // import { useThemeColors } from '../lib/context/ThemeProviderContext';
 
+console.log(new Date().toISOString());
+
+const styles = StyleSheet.create({
+  textInput: {
+    padding: 10,
+    borderColor: '#000',
+    borderWidth: 1,
+    margin: 12,
+  },
+});
+
 export default function Home() {
+  const [value, setValue] = useState('');
   const [entries, setEntries] = useState<Entry[]>([]);
   // const colors = useThemeColors();
 
@@ -27,7 +39,7 @@ export default function Home() {
 
   useEffect(() => {
     // console.log('Sync API URL:', SYNC_API_URL);
-    if (!SYNC_API_URL) {
+    if (!SYNC_ENDPOINT) {
       console.log('[sync] Skipping initial sync - backend not configured');
       return;
     }
@@ -41,44 +53,39 @@ export default function Home() {
     })();
   }, []);
 
-  const addDemo = async () => {
-    const id = await addEntry(
-      'First ProgressPulse entry ✨',
-      new Date().toISOString().slice(0, 10),
-    );
-    setEntries(await listEntries());
-    console.log('Inserted id', id);
-  };
-
-  // await syncEntries();
-
   return (
     <View style={{ padding: 16 }}>
       <Text style={{ fontSize: 20, fontWeight: '600' }}>Your Progress</Text>
-      <Button title="Add demo entry" onPress={addDemo} />
-
-      <View style={{ marginTop: 12, gap: 8 }}>
-        <Button
-          title="Count entries"
-          onPress={async () => {
-            const count = await getEntryCount();
-            console.log('[entries] count =', count);
-            alert(`Entries in DB: ${count}`);
-          }}
-        />
-
-        <Button
-          title="Clear all entries"
-          color="#c62828"
-          onPress={async () => {
-            await clearAllEntries();
-            const fresh = await listEntries();
-            setEntries(fresh);
-            alert('All entries deleted.');
-          }}
+      <View
+        style={{
+          justifyContent: 'center',
+          marginTop: 12,
+        }}
+      >
+        <TextInput
+          editable
+          multiline
+          numberOfLines={4}
+          maxLength={40}
+          onChangeText={setValue}
+          value={value}
+          style={styles.textInput}
         />
       </View>
 
+      <View style={{ marginTop: 12 }}>
+        <Button
+          title="Add Entry"
+          color={value.trim() ? '#c62828' : '#aaaaaa'}
+          disabled={value.trim().length === 0}
+          onPress={async () => {
+            const id = await addEntry(value, new Date().toISOString().slice(0, 10));
+            setEntries(await listEntries());
+            setValue('');
+            console.log('Inserted id', id);
+          }}
+        />
+      </View>
       <FlatList
         style={{ marginTop: 12 }}
         data={entries}
@@ -92,7 +99,6 @@ export default function Home() {
         )}
         ListEmptyComponent={<Text style={{ marginTop: 16, opacity: 0.6 }}>No entries yet</Text>}
       />
-      <Link href="/entry/new">+ Add Entry</Link>
     </View>
   );
 }

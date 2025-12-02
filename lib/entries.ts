@@ -2,7 +2,7 @@
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import { all, run } from './db';
-import { SYNC_API_URL } from './config';
+import { SYNC_ENDPOINT } from './config';
 import { SyncChangePayload, SyncUpdatePayload, SyncResponse, SyncRequest } from './syncTypes';
 
 export type Entry = {
@@ -181,7 +181,7 @@ export async function clearAllEntries(): Promise<void> {
 
 async function callSyncApi(body: SyncRequest): Promise<SyncResponse> {
   // Add auth headers here if needed (e.g. Authorization: Bearer <token>)
-  const res = await fetch(SYNC_API_URL, {
+  const res = await fetch(SYNC_ENDPOINT, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -201,13 +201,16 @@ async function callSyncApi(body: SyncRequest): Promise<SyncResponse> {
 
 export async function syncEntries(): Promise<void> {
   // If backend is down/not configured, don't try to sync
-  if (!SYNC_API_URL) {
+  if (!SYNC_ENDPOINT) {
     console.log('[sync] Skipping sync, SYNC_API_URL not configured');
     return;
   }
   // 1) Read lastSyncAt and dirty entries
   const lastSyncAt = await getLastSyncAt();
+  console.log('[sync] Last sync before call:', lastSyncAt);
+
   const dirtyEntries = await getDirtyEntries();
+  console.log('[sync] Dirty entries:', dirtyEntries);
 
   const changes: SyncChangePayload[] = dirtyEntries.map((entry) => ({
     id: entry.id,
@@ -226,6 +229,8 @@ export async function syncEntries(): Promise<void> {
     changes,
   });
 
+  console.log('[sync] Got response', response);
+
   // 3) Apply udates and update meta in a transaction-ish way
   // if the run/all helper supports transactions, we can wrap this
   for (const update of response.updates) {
@@ -240,4 +245,7 @@ export async function syncEntries(): Promise<void> {
 
   // 5) Update lastSyncAt
   await setLastSyncAt(response.newLastSyncAt);
+
+  const dirtiesAfter = await getDirtyEntries();
+  console.log('[sync] Dirty entries AFTER sync:', dirtiesAfter);
 }
