@@ -2,19 +2,10 @@
 import { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, FlatList } from 'react-native';
 import { initDb } from '../lib/db';
-import {
-  addEntry,
-  // clearAllEntries,
-  Entry,
-  // getEntryCount,
-  listEntries,
-  syncEntries,
-} from '../lib/entries';
+import { addEntry, Entry, listEntries, syncEntries } from '../lib/entries';
 // import { Link } from 'expo-router';
 import { SYNC_ENDPOINT } from '../lib/config';
 // import { useThemeColors } from '../lib/context/ThemeProviderContext';
-
-console.log(new Date().toISOString());
 
 const styles = StyleSheet.create({
   textInput: {
@@ -34,11 +25,11 @@ export default function Home() {
     (async () => {
       await initDb();
       setEntries(await listEntries());
+      console.log('[debug] entries after add:', await listEntries());
     })();
   }, []);
 
   useEffect(() => {
-    // console.log('Sync API URL:', SYNC_API_URL);
     if (!SYNC_ENDPOINT) {
       console.log('[sync] Skipping initial sync - backend not configured');
       return;
@@ -79,6 +70,7 @@ export default function Home() {
           color={value.trim() ? '#c62828' : '#aaaaaa'}
           disabled={value.trim().length === 0}
           onPress={async () => {
+            if (value.trim().length === 0) return;
             const id = await addEntry(value, new Date().toISOString().slice(0, 10));
             setEntries(await listEntries());
             setValue('');
@@ -101,4 +93,15 @@ export default function Home() {
       />
     </View>
   );
+}
+
+{
+  /* <Pressable
+onPress={toggle}
+accessibilityRole="button"
+accessibilityLabel="Open menu"
+style={{ paddingHorizontal: 8, paddingVertical: 6 }}
+>
+<Ionicons name="menu" size={22} color={colors.headerText} />
+</Pressable> */
 }

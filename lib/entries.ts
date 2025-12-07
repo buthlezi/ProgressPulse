@@ -83,6 +83,10 @@ export async function softDeleteEntry(id: string) {
   );
 }
 
+export async function deleteEntry(id: string) {
+  await run(`DELETE FROM entries WHERE id = ?`, [id]);
+}
+
 const SYNC_META_ID = 'entries';
 
 async function ensureSyncMetaTable() {
