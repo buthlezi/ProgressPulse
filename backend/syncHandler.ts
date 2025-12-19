@@ -2,7 +2,23 @@ import { SyncRequest, SyncResponse } from '../lib/syncTypes';
 import { APIGatewayProxyHandlerV2 } from 'aws-lambda';
 import { applyClientChanges, getEntriesChangedSince } from './db';
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Content-Type': 'application/json',
+};
+
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+  // Handle preflight CORS request
+  if (event.requestContext?.http?.method === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: CORS_HEADERS,
+      body: '',
+    };
+  }
+
   try {
     if (!event.body) {
       return {

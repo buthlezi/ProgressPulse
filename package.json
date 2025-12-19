@@ -12,7 +12,8 @@
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "build:lambda": "tsc -p tsconfig.lambda.json"
+    "typecheck": "tsc --noEmit",
+    "build:lambda": "esbuild backend/syncHandler.ts --bundle --platform=node --target=node24 --format=cjs --outfile=lambda-dist/backend/syncHandler.js"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.936.0",
@@ -63,6 +64,7 @@
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
     "aws-lambda": "^1.0.7",
+    "esbuild": "^0.27.2",
     "eslint": "^9.38.0",
     "eslint-config-expo": "~10.0.0",
     "eslint-config-prettier": "^10.1.8",
