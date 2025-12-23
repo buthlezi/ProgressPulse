@@ -16,6 +16,7 @@ export type SyncChangePayload = EntrySyncPayload; // client → server
 export type SyncUpdatePayload = EntrySyncPayload; // server → client canonical version
 
 export type SyncRequest = {
+  userId: string;
   lastSyncAt: string | null; // ISO timeStamp of last successful sync
   changes: SyncChangePayload[]; // dirty entries from client
 };

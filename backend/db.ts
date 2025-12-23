@@ -1,5 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, PutCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { SyncChangePayload, SyncUpdatePayload } from '../lib/syncTypes';
 
 const TABLE_NAME = process.env.TABLE_NAME ?? 'ProgressPulse';
@@ -7,6 +7,8 @@ const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
 
 type EntryItem = {
+  PK: string;
+  SK: string;
   id: string;
   text: string;
   date: string;
@@ -19,11 +21,16 @@ type EntryItem = {
 
 // --- Apply client changes (very simple last-write-wins for now) ---
 
-export async function applyClientChanges(changes: SyncChangePayload[]): Promise<void> {
+export async function applyClientChanges(
+  userId: string,
+  changes: SyncChangePayload[],
+): Promise<void> {
   const now = new Date().toISOString();
 
   for (const change of changes) {
     const item: EntryItem = {
+      PK: `USER#${userId}`,
+      SK: `ENTRY#${change.id}`,
       id: change.id,
       text: change.text,
       date: change.date,
@@ -49,25 +56,27 @@ export async function applyClientChanges(changes: SyncChangePayload[]): Promise<
 // --- Read entries changed since lastSyncAt ---
 
 export async function getEntriesChangedSince(
+  userId: string,
   lastSyncAt: string | null,
 ): Promise<SyncUpdatePayload[]> {
   // MVP: Scan + filter. Fine for a single-user journal.
   // Later we can add a GSI on updatedAt.
-  const params: any = {
+  const pk = `USER#${userId}`;
+
+  const params = {
     TableName: TABLE_NAME,
+    KeyConditionExpression: 'PK = :pk',
+    ExpressionAttributeValues: {
+      ':pk': pk,
+    },
   };
 
-  if (lastSyncAt) {
-    params.FilterExpression = 'updatedAt > :lastSyncAt';
-    params.ExpressionAttributeValues = {
-      ':lastSyncAt': lastSyncAt,
-    };
-  }
-
-  const result = await docClient.send(new ScanCommand(params));
+  const result = await docClient.send(new QueryCommand(params));
   const items = (result.Items ?? []) as EntryItem[];
 
-  return items.map<SyncUpdatePayload>((item) => ({
+  const filtered = lastSyncAt ? items.filter((item) => item.updatedAt > lastSyncAt) : items;
+
+  return filtered.map<SyncUpdatePayload>((item) => ({
     id: item.id,
     text: item.text,
     date: item.date,

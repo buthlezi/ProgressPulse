@@ -2,7 +2,9 @@
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import { all, run } from './db';
-import { SYNC_ENDPOINT } from './config';
+import { SYNC_ENDPOINT, SYNC_SECRET } from './config';
+import { getOrCreateUserId } from './userId';
+
 import { SyncChangePayload, SyncUpdatePayload, SyncResponse, SyncRequest } from './syncTypes';
 
 export type Entry = {
@@ -189,6 +191,7 @@ async function callSyncApi(body: SyncRequest): Promise<SyncResponse> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'x-progresspulse-secret': SYNC_SECRET,
       // 'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(body),
@@ -216,6 +219,8 @@ export async function syncEntries(): Promise<void> {
   const dirtyEntries = await getDirtyEntries();
   console.log('[sync] Dirty entries:', dirtyEntries);
 
+  const userId = await getOrCreateUserId();
+
   const changes: SyncChangePayload[] = dirtyEntries.map((entry) => ({
     id: entry.id,
     text: entry.text,
@@ -229,6 +234,7 @@ export async function syncEntries(): Promise<void> {
 
   // 2) Call backend
   const response = await callSyncApi({
+    userId,
     lastSyncAt,
     changes,
   });
