@@ -2,7 +2,7 @@
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import { all, run } from './db';
-import { SYNC_ENDPOINT, SYNC_SECRET } from './config';
+import { SYNC_ENDPOINT } from './config';
 import { getOrCreateUserId } from './userId';
 
 import { SyncChangePayload, SyncUpdatePayload, SyncResponse, SyncRequest } from './syncTypes';
@@ -191,7 +191,6 @@ async function callSyncApi(body: SyncRequest): Promise<SyncResponse> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-progresspulse-secret': SYNC_SECRET,
       // 'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(body),

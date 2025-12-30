@@ -1,22 +1,13 @@
 import { SyncRequest, SyncResponse } from '../lib/syncTypes';
 import { APIGatewayProxyHandlerV2 } from 'aws-lambda';
 import { applyClientChanges, getEntriesChangedSince } from './db';
+import { requireUser } from './auth';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Progresspulse-Secret',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Content-Type': 'application/json',
-};
-
-const SECRET_HEADER = 'x-progresspulse-secret';
-
-const unauthorized = () => {
-  return {
-    statusCode: 401,
-    body: JSON.stringify({ message: 'Unauthorized' }),
-    headers: CORS_HEADERS,
-  };
 };
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
@@ -27,22 +18,6 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       headers: CORS_HEADERS,
       body: '',
     };
-  }
-
-  const expected = process.env.SYNC_SECRET;
-  const provided = event.headers?.[SECRET_HEADER] ?? event.headers?.[SECRET_HEADER.toLowerCase()];
-
-  if (!expected) {
-    console.error('[sync] SYNC_SECRET is not set');
-    return {
-      statusCode: 500,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({ message: 'Server misconfiguration' }),
-    };
-  }
-
-  if (provided !== expected) {
-    return unauthorized();
   }
 
   try {
@@ -56,7 +31,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
 
     const parsed = JSON.parse(event.body) as SyncRequest;
 
-    const { userId, lastSyncAt, changes } = parsed;
+    const { lastSyncAt, changes } = parsed;
+    const { userId } = await requireUser(event);
 
     // 1) Apply client changes to the server DB
     await applyClientChanges(userId, changes);
@@ -77,13 +53,17 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       headers: CORS_HEADERS,
       body: JSON.stringify(response),
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error('[sync] Error in handler', error);
 
+    const statusCode = error?.statusCode ?? 500;
+
     return {
-      statusCode: 500,
+      statusCode,
       headers: CORS_HEADERS,
-      body: JSON.stringify({ message: 'Internal server error' }),
+      body: JSON.stringify({
+        message: statusCode === 401 ? 'Unauthorized' : 'Internal server error',
+      }),
     };
   }
 };
