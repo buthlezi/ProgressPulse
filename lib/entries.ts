@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { all, run } from './db';
 import { SYNC_ENDPOINT } from './config';
 import { getOrCreateUserId } from './userId';
+import { getIdToken } from './auth';
 
 import { SyncChangePayload, SyncUpdatePayload, SyncResponse, SyncRequest } from './syncTypes';
 
@@ -187,11 +188,19 @@ export async function clearAllEntries(): Promise<void> {
 
 async function callSyncApi(body: SyncRequest): Promise<SyncResponse> {
   // Add auth headers here if needed (e.g. Authorization: Bearer <token>)
+  const token = await getIdToken();
+
+  console.log('[sync] Calling sync API with token:', token ? 'YES' : 'NO');
+  
+  if (! token) {
+    throw new Error('No auth token available for this sync API call');
+  }
+
   const res = await fetch(SYNC_ENDPOINT, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      // 'Authorization': `Bearer ${token}`,
+      'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(body),
   });

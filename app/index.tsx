@@ -1,11 +1,18 @@
 // app/index.tsx (Home)
+import 'react-native-get-random-values';
+import 'react-native-url-polyfill/auto';
+
+import '../lib/amplify'
+
+
 import { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, FlatList } from 'react-native';
 import { initDb } from '../lib/db';
 import { addEntry, Entry, listEntries, syncEntries } from '../lib/entries';
+import { Hub } from 'aws-amplify/utils';
 // import { Link } from 'expo-router';
-import { SYNC_ENDPOINT } from '../lib/config';
 // import { useThemeColors } from '../lib/context/ThemeProviderContext';
+import { login, getIdToken} from '../lib/auth'; 
 
 const styles = StyleSheet.create({
   textInput: {
@@ -19,30 +26,66 @@ const styles = StyleSheet.create({
 export default function Home() {
   const [value, setValue] = useState('');
   const [entries, setEntries] = useState<Entry[]>([]);
+  const [authReady, setAuthReady] = useState(false);
+  // ⏳ give Amplify time to persist the session
+  
   // const colors = useThemeColors();
 
   useEffect(() => {
+    const sub = Hub.listen('auth', ({ payload }) => {
+      if (payload.event === 'signedIn') {
+        console.log('[auth] hub: signedIn');
+        setAuthReady(true);
+      }
+    });
+
+    // 👇 handle restored session
     (async () => {
+      const token = await getIdToken();
+      if (token) {
+        console.log('[auth] session restored');
+        setAuthReady(true);
+      }
+    })();
+  
+    return () => sub();
+  }, []);
+  
+
+  useEffect(() => {
+    (async () => {
+      try {
+        console.log('[auth] starting login...');
+        await login('email', 'password');
+        console.log('[auth] login success');
+
+        setAuthReady(true);
+
+      } catch (e) {
+        console.warn('[auth] login failed', e);
+        return; // stop here if login fails
+      }
+  
       await initDb();
       setEntries(await listEntries());
-      console.log('[debug] entries after add:', await listEntries());
     })();
   }, []);
 
+
   useEffect(() => {
-    if (!SYNC_ENDPOINT) {
-      console.log('[sync] Skipping initial sync - backend not configured');
-      return;
-    }
-    console.log('Syncing...');
+    if (!authReady) return;
+  
     (async () => {
+      
+      console.log('Syncing...');
       try {
         await syncEntries();
       } catch (error) {
         console.warn('Initial sync failed', error);
       }
     })();
-  }, []);
+  }, [authReady]);
+  
 
   return (
     <View style={{ padding: 16 }}>
