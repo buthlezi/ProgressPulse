@@ -5,6 +5,7 @@ import { useState } from 'react';
 // import { colors } from '../../lib/themes';
 import { addEntry } from '../../lib/store';
 import { useThemeColors } from '../../lib/context/ThemeProviderContext';
+import React from 'react';
 
 export default function NewEntry() {
   const [text, setText] = useState('');

@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getEntry, removeEntry } from '../../lib/store';
 // import { colors } from '../../lib/themes';
 import { useThemeColors } from '../../lib/context/ThemeProviderContext';
+import React from 'react';
 
 export default function EntryDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();

@@ -12,7 +12,8 @@ import { addEntry, Entry, listEntries, syncEntries } from '../lib/entries';
 import { Hub } from 'aws-amplify/utils';
 // import { Link } from 'expo-router';
 // import { useThemeColors } from '../lib/context/ThemeProviderContext';
-import { login, getIdToken} from '../lib/auth'; 
+import { login, getAccessToken} from '../lib/auth'; 
+import React from 'react';
 
 const styles = StyleSheet.create({
   textInput: {
@@ -41,7 +42,7 @@ export default function Home() {
 
     // 👇 handle restored session
     (async () => {
-      const token = await getIdToken();
+      const token = await getAccessToken();
       if (token) {
         console.log('[auth] session restored');
         setAuthReady(true);
