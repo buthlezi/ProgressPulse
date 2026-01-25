@@ -23,7 +23,7 @@ export default function AppLayout() {
   }
 
   if (status === 'unauthed') {
-    return <Redirect href="/sign-in" />;
+    return <Redirect href="./sign-in" />;
   }
 
   return <Stack screenOptions={{ headerShown: false }} />;

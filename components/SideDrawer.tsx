@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Animated, Dimensions, Pressable, StyleSheet, View, Text } from 'react-native';
-import { router } from 'expo-router';
+import {useRouter}  from 'expo-router';
+import { logout } from '../lib/auth';
 import { useDrawer } from '../lib/drawer';
-// import { colors } from '../lib/themes';
+import { Ionicons } from '@expo/vector-icons';
 import { useHeaderHeight } from '../lib/context/HeaderHeightContext';
 import { useThemeColors } from '../lib/context/ThemeProviderContext';
 
@@ -10,8 +11,19 @@ const { width: windowWidth } = Dimensions.get('window');
 
 const WIDTH = Math.min(150, Math.round(windowWidth * 0.8));
 
+const rowStyle = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingTop: 0,
+  },
+});
+
+
 export default function SideDrawer() {
   const { headerHeight } = useHeaderHeight();
+  const router = useRouter();
 
   const TOP = Math.round(headerHeight) - StyleSheet.hairlineWidth;
   const colors = useThemeColors();
@@ -34,7 +46,7 @@ export default function SideDrawer() {
     ]).start();
   }, [open, translatedOnX, opacity]);
 
-  const nav = (href: string) => () => {
+  const nav = (href: any) => () => {
     close();
     router.push(href);
   };
@@ -73,14 +85,25 @@ export default function SideDrawer() {
         }}
       >
         <View style={{ paddingHorizontal: 16, gap: 12 }}>
-          <Pressable onPress={nav('/')}>
+          <Pressable onPress={nav('/')} style={rowStyle.row}>
             <Text style={{ fontSize: 18, marginTop: 8 }}>🏠 Home</Text>
           </Pressable>
-          <Pressable onPress={nav('/stats')}>
+          <Pressable onPress={nav('/stats')} style={rowStyle.row}>
             <Text style={{ fontSize: 18 }}>📊 Stats</Text>
           </Pressable>
-          <Pressable onPress={nav('/settings')}>
+          <Pressable onPress={nav('/settings')} style={rowStyle.row}>
             <Text style={{ fontSize: 18 }}>⚙️ Settings</Text>
+          </Pressable>
+          <Pressable
+            onPress={async () => {
+              await logout();
+              close();
+              router.replace('./sign-in');
+            }}
+           style={rowStyle.row}
+          >
+            <Ionicons name="log-out-outline" size={20} />
+            <Text style={{ fontSize: 18 }}>Sign Out</Text>
           </Pressable>
         </View>
       </Animated.View>

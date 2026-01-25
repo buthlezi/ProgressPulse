@@ -2,14 +2,13 @@
 import React from 'react';
 import { Pressable, View, Text } from 'react-native';
 import { Stack } from 'expo-router';
-// import { getAccessToken } from '../lib/auth';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { HeaderHeightProvider, useHeaderHeight } from '../lib/context/HeaderHeightContext';
 import { DrawerProvider, useDrawer } from '../lib/drawer';
 import SideDrawer from '../components/SideDrawer';
-// import { colors } from '../lib/themes';
+
 import { ThemeProviderContext, useThemeColors } from '../lib/context/ThemeProviderContext';
 
 function AppHeader({ title = 'ProgressPulse' }: { title?: string }) {

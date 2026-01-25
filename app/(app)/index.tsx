@@ -1,4 +1,4 @@
-// app/index.tsx (Home)
+// app/(app)/index.tsx (Home)
 import 'react-native-get-random-values';
 import 'react-native-url-polyfill/auto';
 
@@ -9,8 +9,6 @@ import { View, Text, TextInput, Button, StyleSheet, FlatList } from 'react-nativ
 import { initDb } from '../../lib/db';
 import { addEntry, Entry, listEntries, syncEntries } from '../../lib/entries';
 
-// import { Link } from 'expo-router';
-// import { useThemeColors } from '../lib/context/ThemeProviderContext';
 import { getAccessToken } from '../../lib/auth';
 
 const styles = StyleSheet.create({
@@ -27,8 +25,6 @@ export default function Home() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [authReady, setAuthReady] = useState(false);
   // ⏳ give Amplify time to persist the session
-
-  // const colors = useThemeColors();
 
   useEffect(() => {
     setAuthReady(true);
@@ -84,7 +80,6 @@ useEffect(() => {
       <View style={{ marginTop: 12 }}>
         <Button
           title="Add Entry"
-          color={value.trim() ? '#c62828' : '#aaaaaa'}
           disabled={value.trim().length === 0}
           onPress={async () => {
             if (value.trim().length === 0) return;
@@ -112,13 +107,4 @@ useEffect(() => {
   );
 }
 
-{
-  /* <Pressable
-onPress={toggle}
-accessibilityRole="button"
-accessibilityLabel="Open menu"
-style={{ paddingHorizontal: 8, paddingVertical: 6 }}
->
-<Ionicons name="menu" size={22} color={colors.headerText} />
-</Pressable> */
-}
+

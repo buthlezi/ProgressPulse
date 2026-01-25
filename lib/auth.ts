@@ -1,8 +1,11 @@
-// import { Amplify} from 'aws-amplify';
-import { signIn, fetchAuthSession } from 'aws-amplify/auth';
+import { signIn, fetchAuthSession, signOut as amplifySignOut } from 'aws-amplify/auth';
 
 export async function login(email: string, password: string) {
   await signIn({ username: email, password });
+}
+
+export async function logout() {
+  await amplifySignOut();
 }
 
 export async function getAccessToken(): Promise<string | null> {
