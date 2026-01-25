@@ -191,8 +191,8 @@ async function callSyncApi(body: SyncRequest): Promise<SyncResponse> {
   const token = await getIdToken();
 
   console.log('[sync] Calling sync API with token:', token ? 'YES' : 'NO');
-  
-  if (! token) {
+
+  if (!token) {
     throw new Error('No auth token available for this sync API call');
   }
 
@@ -200,7 +200,7 @@ async function callSyncApi(body: SyncRequest): Promise<SyncResponse> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(body),
   });

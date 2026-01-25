@@ -1,11 +1,10 @@
 import { View, Text, TextInput, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import React, { useState } from 'react';
 // import { colors } from '../../lib/themes';
 import { addEntry } from '../../lib/store';
 import { useThemeColors } from '../../lib/context/ThemeProviderContext';
-import React from 'react';
 
 export default function NewEntry() {
   const [text, setText] = useState('');

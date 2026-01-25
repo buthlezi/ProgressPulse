@@ -2,6 +2,7 @@
 import React from 'react';
 import { Pressable, View, Text } from 'react-native';
 import { Stack } from 'expo-router';
+// import { getAccessToken } from '../lib/auth';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,7 +13,7 @@ import SideDrawer from '../components/SideDrawer';
 import { ThemeProviderContext, useThemeColors } from '../lib/context/ThemeProviderContext';
 
 function AppHeader({ title = 'ProgressPulse' }: { title?: string }) {
-  const insets = useSafeAreaInsets();
+const insets = useSafeAreaInsets();
   const { setHeaderHeight } = useHeaderHeight();
   const { toggle } = useDrawer();
   const colors = useThemeColors();
@@ -46,17 +47,27 @@ function AppHeader({ title = 'ProgressPulse' }: { title?: string }) {
 }
 
 export default function RootLayout() {
+
   return (
     <SafeAreaProvider>
       <StatusBar style="light" />
       <ThemeProviderContext>
         <HeaderHeightProvider>
           <DrawerProvider>
-            <Stack
+           <Stack
+              initialRouteName='(app)'
               screenOptions={{
                 header: () => <AppHeader />,
               }}
-            />
+            >
+              <Stack.Screen
+                name="sign-in"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="(app)"
+              />
+            </Stack>
             <SideDrawer />
           </DrawerProvider>
         </HeaderHeightProvider>
