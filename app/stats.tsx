@@ -1,18 +1,71 @@
-import React, { useMemo } from 'react';
+import React, { useState, useMemo, useCallback, use} from 'react';
+import { useFocusEffect } from 'expo-router';
 import { Dimensions, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useThemeColors } from '../lib/context/ThemeProviderContext';
 import { BarChart, LineChart } from 'react-native-chart-kit';
+import { Entry,listEntries } from '../lib/entries';
+import { initDb } from '../lib/db';
 
 export default function Stats() {
+  const [entries, setEntries] = useState<Entry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
+    (async () => {
+      await initDb();
+      const allEntries = await listEntries();
+
+      if (active) {
+        setEntries(allEntries);
+        setLoading(false);
+      }
+    })();
+
+    return () => {
+      active = false;
+    }
+  },[])
+);
+
   const insets = useSafeAreaInsets();
   const colors = useThemeColors();
-  const chartWidth = Dimensions.get('window').width - 32;
+  const chartWidth = Dimensions.get('window').width - 60;
 
-  const last7 = useMemo(() => [1, 0, 2, 3, 1, 4, 2], []);
-  const trend30 = [
-    0, 1, 0, 2, 1, 3, 1, 0, 2, 2, 3, 4, 2, 1, 0, 1, 1, 3, 2, 2, 1, 0, 4, 3, 2, 1, 2, 3, 2, 4,
-  ];
+  const last7 = useMemo(() => {
+  const today = new Date();
+  const result: number[] = [];
+
+  for (let i = 6; i >= 0; i--) {
+    const newDate = new Date(today);
+    newDate.setDate(today.getDate() - i);
+    const iso = newDate.toISOString().slice(0, 10);
+
+    const count = entries.filter(entry => entry.date === iso).length;
+    console.log('date:', iso, 'count:', count);
+    result.push(count);
+  }
+  console.log('result last7:', result);
+  return result;
+}, [entries]);
+
+  const trend30 =  useMemo(() => {
+    const today = new Date();
+    const result: number[] = [];
+
+    for (let i = 29; i >= 0; i--) {
+      const newDate = new Date(today);
+      newDate.setDate(today.getDate() - i);
+      const iso = newDate.toISOString().slice(0, 10);
+
+      const count = entries.filter(entry => entry.date === iso).length;
+      result.push(count);
+    }
+    console.log('result trend30:', result);
+    return result;
+  }, [entries]);
 
   const streak = useMemo(() => {
     let streakValue = 0;
@@ -31,6 +84,26 @@ export default function Stats() {
     backgroundColor: colors.pageBg ?? '#fff',
   };
 
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingTop: insets.top,
+          backgroundColor: colors.pageBg,
+        }}
+      >
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  const labels30 = Array.from({ length: 30 }, (_, item) =>
+  item % 7 === 0 ? `${item + 1}` : ''
+);
+  
   return (
     <View
       style={{
@@ -82,10 +155,10 @@ export default function Stats() {
       {/* Entries over time */}
       <View style={cardStyle}>
         <Text style={{ fontWeight: '600' }}>📈 Entries over time</Text>
-        <View style={{ marginTop: 10, borderRadius: 8, overflow: 'hidden' }}>
+        <View style={{ marginTop: 10, borderRadius: 8, overflow: 'hidden', paddingRight: 100 }}>
           <LineChart
             data={{
-              labels: [], // optional
+              labels: labels30, // optional
               datasets: [{ data: trend30 }],
             }}
             width={chartWidth}
@@ -94,6 +167,7 @@ export default function Stats() {
             withInnerLines={false}
             // withShadow={false}
             bezier
+            segments={2}
             fromZero
             chartConfig={{
               backgroundGradientFrom: colors.pageBg,
@@ -102,6 +176,7 @@ export default function Stats() {
               labelColor: () => colors.primaryDark ?? '#111',
               decimalPlaces: 0,
               propsForBackgroundLines: { strokeWidth: 0 },
+              propsForLabels: { fontSize: 10 }
             }}
             style={{}}
           />
