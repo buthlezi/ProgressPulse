@@ -56,7 +56,6 @@ useEffect(() => {
   })();
 }, [authReady]);
 
-
   return (
     <View style={{ padding: 16 }}>
       <Text style={{ fontSize: 20, fontWeight: '600' }}>Your Progress</Text>

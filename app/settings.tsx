@@ -1,4 +1,4 @@
-// import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, Pressable, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme, useThemeColors } from '../lib/context/ThemeProviderContext';

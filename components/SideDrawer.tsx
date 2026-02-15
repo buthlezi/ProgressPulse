@@ -20,7 +20,6 @@ const rowStyle = StyleSheet.create({
   },
 });
 
-
 export default function SideDrawer() {
   const { headerHeight } = useHeaderHeight();
   const router = useRouter();

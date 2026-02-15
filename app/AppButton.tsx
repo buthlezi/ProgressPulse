@@ -7,7 +7,7 @@ export default function AppButton({title,
     onPress: () => void; 
     disabled?: boolean}) {
   return (
-    <Pressable 
+    <Pressable
     onPress={onPress} 
     disabled={disabled} 
     style=

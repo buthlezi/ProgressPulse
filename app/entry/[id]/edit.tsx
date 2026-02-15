@@ -3,7 +3,7 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getEntry, updateEntry } from '../../../lib/store';
 // import { colors } from '../../../lib/themes';
-import { useState } from 'react';
+import React,{ useState } from 'react';
 import { useThemeColors } from '../../../lib/context/ThemeProviderContext';
 
 export default function EditEntry() {
