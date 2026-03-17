@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, KeyboardAvoidingView, Platform, ScrollView, Pressable } from 'react-native';
+import { View, Text, TextInput, KeyboardAvoidingView, Platform, ScrollView, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { login } from '../lib/auth';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,6 +12,7 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   console.log('showPassword', showPassword);
+  // console.log
 
 
    return (
@@ -28,7 +29,7 @@ export default function SignIn() {
         keyboardShouldPersistTaps="handled"
       >
         <Text style={{ fontSize: 24, fontWeight: '600', marginBottom: 16, textAlign: 'center' }}>
-          Sign In
+          Sign In Here
         </Text>
 
         <TextInput
@@ -70,10 +71,14 @@ export default function SignIn() {
          onPress={async () => {
           try {
             setLoading(true);
-            await login(email, password);
+            const res = await login(email, password);
+            console.log("LOGIN_OK", res)
             router.replace('/');
-          } catch (error) {
+          } catch (error: any) {
             console.warn('Login failed', error);
+            console.log("LOGIN_ERROR_NAME", error?.name);
+            console.log("LOGIN_ERROR_MSG", error?.message);
+            console.log("LOGIN_ERROR_FULL", JSON.stringify(error, null, 2));            
           } finally {
             setLoading(false);
           }

@@ -1,5 +1,9 @@
-// app/_layout.tsx
+import 'react-native-get-random-values';
+import 'react-native-url-polyfill/auto';
+import 'cross-fetch/polyfill'
+
 import React from 'react';
+import { ensureAmplifyConfigured } from "../lib/amplify";
 import { Pressable, View, Text } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -10,6 +14,8 @@ import { DrawerProvider, useDrawer } from '../lib/drawer';
 import SideDrawer from '../components/SideDrawer';
 
 import { ThemeProviderContext, useThemeColors } from '../lib/context/ThemeProviderContext';
+
+ensureAmplifyConfigured();
 
 function AppHeader({ title = 'ProgressPulse' }: { title?: string }) {
 const insets = useSafeAreaInsets();

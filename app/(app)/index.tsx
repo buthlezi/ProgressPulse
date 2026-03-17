@@ -1,9 +1,4 @@
 // app/(app)/index.tsx (Home)
-import 'react-native-get-random-values';
-import 'react-native-url-polyfill/auto';
-
-import '../../lib/amplify';
-
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, FlatList } from 'react-native';
 import { initDb } from '../../lib/db';
@@ -37,24 +32,24 @@ export default function Home() {
     })();
   }, []);
 
-useEffect(() => {
-  if (!authReady) return;
+// useEffect(() => {
+//   if (!authReady) return;
 
-  (async () => {
-    const token = await getAccessToken();
-    if (!token) {
-      console.log('[sync] skipping, no token');
-      return;
-    }
+//   (async () => {
+//     const token = await getAccessToken();
+//     if (!token) {
+//       console.log('[sync] skipping, no token');
+//       return;
+//     }
 
-    console.log('Syncing...');
-    try {
-      await syncEntries();
-    } catch (error) {
-      console.warn('Initial sync failed', error);
-    }
-  })();
-}, [authReady]);
+//     console.log('Syncing...');
+//     try {
+//       await syncEntries();
+//     } catch (error) {
+//       console.warn('Initial sync failed', error);
+//     }
+//   })();
+// }, [authReady]);
 
   return (
     <View style={{ padding: 16 }}>
@@ -92,9 +87,9 @@ useEffect(() => {
       <FlatList
         style={{ marginTop: 12 }}
         data={entries}
-        keyExtractor={(entry) => entry.id}
+        keyExtractor={(entry:any) => entry.id}
         contentContainerStyle={{ paddingBottom: 12 }}
-        renderItem={({ item }) => (
+        renderItem={({ item }: { item: Entry }) => (
           <View style={{ paddingVertical: 10 }}>
             <Text>{item.text}</Text>
             <Text style={{ opacity: 0.6 }}>{item.date}</Text>
@@ -105,5 +100,3 @@ useEffect(() => {
     </View>
   );
 }
-
-

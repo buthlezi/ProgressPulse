@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "progresspulse",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "jsEngine": "jsc",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.buthlezi.ProgressPulse"
@@ -43,11 +43,12 @@
       ],
       "expo-secure-store",
       "expo-sqlite",
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true,
-      "reactCompiler": true
+      "reactCompiler": false
     },
     "extra": {
       "router": {},
