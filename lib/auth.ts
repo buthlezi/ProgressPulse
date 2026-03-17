@@ -1,5 +1,5 @@
-// lib/auth.ts
-import { fetchAuthSession, signOut as amplifySignOut } from 'aws-amplify/auth';
+// // lib/auth.ts
+// import { fetchAuthSession, signOut as amplifySignOut } from 'aws-amplify/auth';
 import {CognitoIdentityProviderClient, InitiateAuthCommand} from '@aws-sdk/client-cognito-identity-provider';
 import * as SecureStore from 'expo-secure-store';
 
@@ -17,12 +17,21 @@ export async function login(email: string, password: string) {
             }
         })
         const response = await client.send(command)
-        console.log("LOGIN_OK", response.AuthenticationResult);
+        // console.log("LOGIN_OK", response.AuthenticationResult);
 
         await SecureStore.setItemAsync('accessToken', response.AuthenticationResult?.AccessToken ?? '');
         await SecureStore.setItemAsync('idToken', response.AuthenticationResult?.IdToken ?? '');
-        await SecureStore.setItemAsync('refreshToken', response.AuthenticationResult?.RefreshToken ?? '');
-        return response.AuthenticationResult;
+        await SecureStore.setItemAsync('refreshToken', response.AuthenticationResult?.RefreshToken ?? '');  
+
+        const user = {
+          // email,
+          id: response.AuthenticationResult?.IdToken ? JSON.parse(atob(response.AuthenticationResult.IdToken.split('.')[1])).sub : null,
+          email: response.AuthenticationResult?.IdToken ? JSON.parse(atob(response.AuthenticationResult.IdToken.split('.')[1])).email : null,
+          verified: response.AuthenticationResult?.IdToken ? JSON.parse(atob(response.AuthenticationResult.IdToken.split('.')[1])).email_verified : null,
+        }
+
+        console.log("USER", user);
+        return   { response, user};
       }
     catch (error: any) { 
     console.log("LOGIN_ERROR_RAW", error);     
@@ -35,7 +44,13 @@ export async function login(email: string, password: string) {
 }
 
 export async function logout() {
-  await amplifySignOut();
+  try {
+    await SecureStore.deleteItemAsync('accessToken');
+    await SecureStore.deleteItemAsync('idToken');
+    await SecureStore.deleteItemAsync('refreshToken');
+  } catch (error) {
+    console.warn('Logout failed', error);
+  }
 }
 
 export async function getAccessToken(): Promise<string | null> {
@@ -48,6 +63,32 @@ export async function getAccessToken(): Promise<string | null> {
 }
 
 export async function getIdToken() {
-  const session = await fetchAuthSession();
-  return session.tokens?.idToken?.toString() ?? null;
+  try {    return await SecureStore.getItemAsync('idToken');
+  } catch (error) {
+    console.warn('[auth] getIdToken failed', error);
+    return null;
+  }
+}
+
+
+
+export async function restoreSession() {
+  try {
+  const idToken = await getIdToken();
+  if (idToken) {
+    const user = {
+      id: JSON.parse(atob(idToken.split('.')[1])).sub,
+      email: JSON.parse(atob(idToken.split('.')[1])).email,
+      verified: JSON.parse(atob(idToken.split('.')[1])).email_verified,
+    }
+    console.log("RESTORE_SESSION_USER", user);
+    return user;
+  } else {
+    console.log("RESTORE_SESSION_NO_TOKEN");
+    return null;
+  } 
+  } catch (error) {
+    console.warn('Restore session failed', error);
+    return null;
+  }
 }

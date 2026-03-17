@@ -21,13 +21,13 @@ export default function Home() {
   const [authReady, setAuthReady] = useState(false);
   // ⏳ give Amplify time to persist the session
 
-  useEffect(() => {
+  useEffect(() => { 
     setAuthReady(true);
   }, []);
 
   useEffect(() => {
     (async () => {
-      await initDb();
+      await initDb(); 
       setEntries(await listEntries());
     })();
   }, []);
