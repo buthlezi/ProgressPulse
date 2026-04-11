@@ -21,35 +21,35 @@ export default function Home() {
   const [authReady, setAuthReady] = useState(false);
   // ⏳ give Amplify time to persist the session
 
-  useEffect(() => { 
+  useEffect(() => {
     setAuthReady(true);
   }, []);
 
   useEffect(() => {
     (async () => {
-      await initDb(); 
+      await initDb();
       setEntries(await listEntries());
     })();
   }, []);
 
-// useEffect(() => {
-//   if (!authReady) return;
+  useEffect(() => {
+    if (!authReady) return;
 
-//   (async () => {
-//     const token = await getAccessToken();
-//     if (!token) {
-//       console.log('[sync] skipping, no token');
-//       return;
-//     }
+    (async () => {
+      const token = await getAccessToken();
+      if (!token) {
+        console.log('[sync] skipping, no token');
+        return;
+      }
 
-//     console.log('Syncing...');
-//     try {
-//       await syncEntries();
-//     } catch (error) {
-//       console.warn('Initial sync failed', error);
-//     }
-//   })();
-// }, [authReady]);
+      console.log('Syncing...');
+      try {
+        await syncEntries();
+      } catch (error) {
+        console.warn('Initial sync failed', error);
+      }
+    })();
+  }, [authReady]);
 
   return (
     <View style={{ padding: 16 }}>
@@ -87,7 +87,7 @@ export default function Home() {
       <FlatList
         style={{ marginTop: 12 }}
         data={entries}
-        keyExtractor={(entry:any) => entry.id}
+        keyExtractor={(entry: any) => entry.id}
         contentContainerStyle={{ paddingBottom: 12 }}
         renderItem={({ item }: { item: Entry }) => (
           <View style={{ paddingVertical: 10 }}>

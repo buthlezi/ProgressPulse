@@ -19,8 +19,6 @@ export default function SignIn() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  console.log('showPassword', showPassword);
-  // console.log
 
   return (
     <KeyboardAvoidingView
@@ -97,8 +95,8 @@ export default function SignIn() {
               router.replace('/');
             } catch (error: any) {
               console.warn('Login failed', error);
-              console.log('LOGIN_ERROR_NAME', error?.name);
-              console.log('LOGIN_ERROR_MSG', error?.message);
+              // console.log('LOGIN_ERROR_NAME', error?.name);
+              // console.log('LOGIN_ERROR_MSG', error?.message);
               console.log('LOGIN_ERROR_FULL', JSON.stringify(error, null, 2));
             } finally {
               setLoading(false);
