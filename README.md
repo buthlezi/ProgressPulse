@@ -22,23 +22,22 @@ Track your daily progress, maintain streaks, and visualize your growth — even 
   <a href="./assets/screens/settings_medium.png">⚙️ <strong>ProgressPulse Settings</strong></a>
 </p>
 
-_(Screenshots from Android emulator — captured November 2025)_
-
 ---
 
 ## 🎯 Overview
 
 ProgressPulse helps learners and professionals build consistency through daily updates.  
-It focuses on simplicity and momentum — quick entries, clear streaks, and smart reminders.
+It focuses on simplicity and momentum — quick entries, clear streaks, and reliable offline access.
 
 ### ✨ Key Features
 
-- 🏠 **Home Dashboard** – view your latest progress and streaks
-- ✍️ **Add / Edit / Delete Entries** – track what matters every day
-- 💾 **Offline-first** – all data stored locally using SQLite
-- 🔐 **Secure User ID** – handled via Expo SecureStore
-- 🔔 **Notifications** _(coming soon)_ – gentle reminders to keep you consistent
-- ☁️ **Cloud Sync (Planned)** – AWS Lambda + DynamoDB for multi-device use
+- 🏠 **Home Dashboard** – view and manage your daily entries
+- ✍️ **Add / Edit / Delete Entries** – track progress effortlessly
+- 💾 **Offline-first Architecture** – powered by SQLite
+- 🔐 **Secure User Identity** – managed via Expo SecureStore
+- ☁️ **Cloud Sync** – AWS Lambda + DynamoDB for multi-device support
+- 📊 **Stats Dashboard** – visualize streaks and trends (in progress)
+- 🔔 **Notifications** _(coming soon)_ – stay consistent with reminders
 
 ---
 
@@ -47,35 +46,55 @@ It focuses on simplicity and momentum — quick entries, clear streaks, and smar
 | Layer                  | Tools                                                    |
 | ---------------------- | -------------------------------------------------------- |
 | **Frontend**           | React Native · Expo · Expo Router · TypeScript           |
-| **Storage**            | Expo SQLite (local) · Expo SecureStore                   |
+| **State & Storage**    | Expo SQLite (local) · Expo SecureStore                   |
+| **Authentication**     | AWS Cognito (custom integration)                         |
+| **Backend**            | AWS Lambda · DynamoDB · API Gateway                      |
 | **Build & Deployment** | EAS Build · Android Studio                               |
-| **Backend (Phase 2)**  | AWS Lambda · DynamoDB · API Gateway · Cognito (optional) |
 
 ---
 
 ## 📂 Project Structure
 
 ```
-app/
-  _layout.tsx          # header + navigation layout
-  index.tsx            # Home screen
-  entry/
-    new.tsx            # New Entry screen
-    [id].tsx           # Entry Detail screen
-  stats.tsx            # Stats (upcoming)
-  settings.tsx         # Settings (upcoming)
+app/ 
+  (app)/ 
+    _layout.tsx         # Root layout (navigation + providers) 
+    index.tsx           # Home screen 
+  entry/ 
+    _layout.tsx 
+    AppButton.tsx       # Reusable button component 
+    settings.tsx        # Settings screen 
+    sign-in.tsx         # Authentication screen 
+    stats.tsx           # Stats screen 
+    
+assets/                 # Images, icons, screenshots 
+backend/                # Backend & sync-related logic 
+components/ 
+  SideDrawer.tsx        # Navigation drawer
 
-lib/
-  colors.ts            # Shared theme colors
-  entries.ts           # SQLite CRUD logic
-  userId.ts            # Secure user ID generation
+lib/ 
+  context/ # Global state providers 
+  auth.ts               # Cognito authentication logic 
+  config.ts             # Environment 
+  config db.ts          # Shared DB interface 
+  db.native.ts          # SQLite (mobile) 
+  db.web.ts             # Web fallback 
+  entries.ts            # CRUD logic 
+  storage.ts            # Secure/local storage helpers 
+  store.ts              # State management 
+  syncTypes.ts          # Sync models/types 
+  testLogin.ts          # Auth debugging utilities 
+  themes.ts             # Theme system 
+  userId.ts             # User identity handling
+
+  The app uses a modular architecture separating UI, business logic, and platform-specific implementations for scalability.
 ```
 
 ---
 
-## 📸 Screens & Flow
+## 📸 App Flow
 
-**User Flow:**
+**User Journey:**
 
 1. Home →
 2. Add Entry →
@@ -89,12 +108,8 @@ lib/
 - ✅ Home
 - ✅ Add New Entry
 - ✅ Entry Details
-- ⏳ Stats
-- ⏳ Settings
-
-<p align="center">
-  <img src="./assets/screens/flow-diagram.png" width="600" alt="App Flow Diagram" />
-</p>
+- ✅ Stats
+- ✅ Settings
 
 ---
 
@@ -112,9 +127,9 @@ npm install
 npx expo start
 ```
 
-### 3️⃣ Open in Android Studio (recommended)
+### 3️⃣ Run on Android (recommended)
 
-Since SecureStore isn’t supported in Expo Go, use a dev build:
+Expo Go has limitations with SecureStore — use a dev build for full functionality.
 
 ```bash
 npx expo run:android
@@ -130,9 +145,11 @@ npx expo run:android
 | ✅    | Integrated SQLite for offline data        |
 | ✅    | Added SecureStore for unique user IDs     |
 | ✅    | Built CRUD entry system (add/edit/delete) |
-| 🧩    | Connected frontend logic to SQLite        |
-| 🔜    | Add Notifications and Stats charts        |
-| 🔜    | Cloud Sync with AWS Lambda + DynamoDB     |
+| ✅    | Connected frontend logic to SQLite        |
+| ✅    | Add Stats charts                          |
+| ✅    | Cloud Sync with AWS Lambda + DynamoDB     |
+| 🔜    | Add Notifications                         |
+| 🔜    | App Store Release                         |
 
 ---
 
@@ -145,13 +162,21 @@ npx expo run:android
 
 ---
 
+## 🧠 Key Engineering Decisions
+- Offline-first design → ensures reliability without network dependency
+- Platform abstraction (db.native.ts, db.web.ts) → clean cross-platform support
+- Custom Cognito auth flow → deeper control vs black-box solutions
+- Modular architecture → scalable as features grow
+
+---
+
 ## 🔮 Next Steps
 
-- 📊 Add streak charts (using `react-native-chart-kit`)
-- ☁️ Implement AWS backend sync
 - 🔔 Integrate daily reminder notifications
 - 🧾 Export data (CSV / PDF)
+- 📊 Advanced analytics & charts
 - 🚀 Publish to Play Store (internal track first)
+- 🤖 AI-powered insights (future vision)
 
 ---
 
@@ -160,7 +185,14 @@ npx expo run:android
 Built by **Fowell Whitfield (buthlezi)** — Software Engineer focused on building scalable, practical apps that help people learn, grow, and stay consistent.  
 Currently exploring the intersection of **mobile development** and **AI-driven productivity tools**.
 
+Currently exploring:
+
+📱 Mobile engineering (React Native)
+☁️ Serverless backend architecture
+🤖 AI-powered productivity tools
+
 ---
+
 
 ## 🪪 License
 
@@ -168,4 +200,8 @@ MIT License © 2025 Fowell Whitfield
 
 ---
 
-> “Small daily progress adds up — ProgressPulse is built around that philosophy.”
+> “Small daily progress compounds into meaningful growth — ProgressPulse is built around that philosophy.”
+
+
+
+
