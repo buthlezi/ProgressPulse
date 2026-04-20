@@ -178,7 +178,7 @@ export default function Home() {
   };
 
   return (
-    <View style={{ padding: 16 }}>
+    <View style={{ flex: 1, padding: 16 }}>
       <Modal
         visible={isEditOpen}
         transparent
@@ -254,10 +254,10 @@ export default function Home() {
         </TouchableOpacity>
       </View>
       <FlatList
-        style={{ marginTop: 12, marginHorizontal: 12 }}
+        style={{ flex: 1, marginTop: 12, marginHorizontal: 12 }}
         data={entries}
         keyExtractor={(entry: any) => entry.id}
-        contentContainerStyle={{ paddingBottom: 12 }}
+        contentContainerStyle={{ paddingBottom: 30 }}
         renderItem={({ item }: { item: Entry }) => (
           <>
             <View style={styles.rowContainer}>

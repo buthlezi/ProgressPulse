@@ -187,9 +187,9 @@ Currently exploring the intersection of **mobile development** and **AI-driven p
 
 Currently exploring:
 
-📱 Mobile engineering (React Native)
-☁️ Serverless backend architecture
-🤖 AI-powered productivity tools
+- 📱 Mobile engineering (React Native)
+- ☁️ Serverless backend architecture
+- 🤖 AI-powered productivity tools
 
 ---
 
