@@ -76,7 +76,7 @@ lib/
   context/ # Global state providers 
   auth.ts               # Cognito authentication logic 
   config.ts             # Environment 
-  config db.ts          # Shared DB interface 
+  db.ts                 # Shared DB interface 
   db.native.ts          # SQLite (mobile) 
   db.web.ts             # Web fallback 
   entries.ts            # CRUD logic 
