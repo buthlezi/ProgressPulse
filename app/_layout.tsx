@@ -19,7 +19,7 @@ import { ThemeProviderContext, useThemeColors } from '../lib/context/ThemeProvid
 function AppHeader({ title = 'ProgressPulse' }: { title?: string }) {
   const insets = useSafeAreaInsets();
   const { setHeaderHeight } = useHeaderHeight();
-  const { toggle } = useDrawer();
+  const { toggle, open } = useDrawer();
   const colors = useThemeColors();
 
   return (
@@ -43,7 +43,7 @@ function AppHeader({ title = 'ProgressPulse' }: { title?: string }) {
         accessibilityLabel="Open menu"
         style={{ paddingHorizontal: 8, paddingVertical: 6 }}
       >
-        <Ionicons name="menu" size={22} color={colors.headerText} />
+        <Ionicons name={open ? 'close' : 'menu'} size={22} color={colors.headerText} />
       </Pressable>
       <Text style={{ color: colors.headerText, fontSize: 18, fontWeight: '600' }}>{title}</Text>
     </View>

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Dimensions, Pressable, StyleSheet, View, Text } from 'react-native';
-import {useRouter}  from 'expo-router';
+import { useRouter } from 'expo-router';
 import { logout } from '../lib/auth';
 import { useDrawer } from '../lib/drawer';
 import { Ionicons } from '@expo/vector-icons';
@@ -99,7 +99,7 @@ export default function SideDrawer() {
               close();
               router.replace('./sign-in');
             }}
-           style={rowStyle.row}
+            style={rowStyle.row}
           >
             <Ionicons name="log-out-outline" size={20} />
             <Text style={{ fontSize: 18 }}>Sign Out</Text>

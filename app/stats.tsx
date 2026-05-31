@@ -1,10 +1,10 @@
-import React, { useState, useMemo, useCallback, use} from 'react';
+import React, { useState, useMemo, useCallback, use } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { Dimensions, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useThemeColors } from '../lib/context/ThemeProviderContext';
 import { BarChart, LineChart } from 'react-native-chart-kit';
-import { Entry,listEntries } from '../lib/entries';
+import { Entry, listEntries } from '../lib/entries';
 import { initDb } from '../lib/db';
 
 export default function Stats() {
@@ -14,44 +14,44 @@ export default function Stats() {
   useFocusEffect(
     useCallback(() => {
       let active = true;
-    (async () => {
-      await initDb();
-      const allEntries = await listEntries();
+      (async () => {
+        await initDb();
+        const allEntries = await listEntries();
 
-      if (active) {
-        setEntries(allEntries);
-        setLoading(false);
-      }
-    })();
+        if (active) {
+          setEntries(allEntries);
+          setLoading(false);
+        }
+      })();
 
-    return () => {
-      active = false;
-    }
-  },[])
-);
+      return () => {
+        active = false;
+      };
+    }, []),
+  );
 
   const insets = useSafeAreaInsets();
   const colors = useThemeColors();
   const chartWidth = Dimensions.get('window').width - 60;
 
   const last7 = useMemo(() => {
-  const today = new Date();
-  const result: number[] = [];
+    const today = new Date();
+    const result: number[] = [];
 
-  for (let i = 6; i >= 0; i--) {
-    const newDate = new Date(today);
-    newDate.setDate(today.getDate() - i);
-    const iso = newDate.toISOString().slice(0, 10);
+    for (let i = 6; i >= 0; i--) {
+      const newDate = new Date(today);
+      newDate.setDate(today.getDate() - i);
+      const iso = newDate.toISOString().slice(0, 10);
 
-    const count = entries.filter(entry => entry.date === iso).length;
-    console.log('date:', iso, 'count:', count);
-    result.push(count);
-  }
-  console.log('result last7:', result);
-  return result;
-}, [entries]);
+      const count = entries.filter((entry) => entry.date === iso).length;
+      console.log('date:', iso, 'count:', count);
+      result.push(count);
+    }
+    console.log('result last7:', result);
+    return result;
+  }, [entries]);
 
-  const trend30 =  useMemo(() => {
+  const trend30 = useMemo(() => {
     const today = new Date();
     const result: number[] = [];
 
@@ -60,7 +60,7 @@ export default function Stats() {
       newDate.setDate(today.getDate() - i);
       const iso = newDate.toISOString().slice(0, 10);
 
-      const count = entries.filter(entry => entry.date === iso).length;
+      const count = entries.filter((entry) => entry.date === iso).length;
       result.push(count);
     }
     console.log('result trend30:', result);
@@ -100,10 +100,11 @@ export default function Stats() {
     );
   }
 
-  const labels30 = Array.from({ length: 30 }, (_, item) =>
-  item % 7 === 0 ? `${item + 1}` : ''
-);
-  
+  const labels30 = Array.from({ length: 30 }, (_, item) => (item % 7 === 0 ? `${item + 1}` : ''));
+
+  const maxLast7 = Math.max(...last7);
+  const ySegments = Math.max(1, maxLast7); // at least 1 segment to avoid division by zero
+
   return (
     <View
       style={{
@@ -128,6 +129,7 @@ export default function Stats() {
             }}
             width={chartWidth}
             height={170}
+            segments={ySegments}
             showBarTops={false}
             showValuesOnTopOfBars={false}
             withInnerLines={false}
@@ -176,7 +178,7 @@ export default function Stats() {
               labelColor: () => colors.primaryDark ?? '#111',
               decimalPlaces: 0,
               propsForBackgroundLines: { strokeWidth: 0 },
-              propsForLabels: { fontSize: 10 }
+              propsForLabels: { fontSize: 10 },
             }}
             style={{}}
           />
