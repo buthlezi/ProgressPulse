@@ -1,10 +1,10 @@
 // // lib/auth.ts
-// import { fetchAuthSession, signOut as amplifySignOut } from 'aws-amplify/auth';
 import {
   CognitoIdentityProviderClient,
   InitiateAuthCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-import * as SecureStore from 'expo-secure-store';
+// import * as SecureStore from 'expo-secure-store';
+import { storage } from './storage';
 
 const client = new CognitoIdentityProviderClient({ region: 'eu-west-1' });
 
@@ -21,12 +21,9 @@ export async function login(email: string, password: string) {
     const response = await client.send(command);
     // console.log("LOGIN_OK", response.AuthenticationResult);
 
-    await SecureStore.setItemAsync('accessToken', response.AuthenticationResult?.AccessToken ?? '');
-    await SecureStore.setItemAsync('idToken', response.AuthenticationResult?.IdToken ?? '');
-    await SecureStore.setItemAsync(
-      'refreshToken',
-      response.AuthenticationResult?.RefreshToken ?? '',
-    );
+    await storage.setItemAsync('accessToken', response.AuthenticationResult?.AccessToken ?? '');
+    await storage.setItemAsync('idToken', response.AuthenticationResult?.IdToken ?? '');
+    await storage.setItemAsync('refreshToken', response.AuthenticationResult?.RefreshToken ?? '');
 
     const user = {
       // email,
@@ -55,9 +52,9 @@ export async function login(email: string, password: string) {
 
 export async function logout() {
   try {
-    await SecureStore.deleteItemAsync('accessToken');
-    await SecureStore.deleteItemAsync('idToken');
-    await SecureStore.deleteItemAsync('refreshToken');
+    await storage.removeItemAsync('accessToken');
+    await storage.removeItemAsync('idToken');
+    await storage.removeItemAsync('refreshToken');
   } catch (error) {
     console.warn('Logout failed', error);
   }
@@ -65,7 +62,7 @@ export async function logout() {
 
 export async function getAccessToken(): Promise<string | null> {
   try {
-    return await SecureStore.getItemAsync('accessToken');
+    return await storage.getItemAsync('accessToken');
   } catch (error) {
     console.warn('[auth] getAccessToken failed', error);
     return null;
@@ -74,7 +71,7 @@ export async function getAccessToken(): Promise<string | null> {
 
 export async function getIdToken() {
   try {
-    return await SecureStore.getItemAsync('idToken');
+    return await storage.getItemAsync('idToken');
   } catch (error) {
     console.warn('[auth] getIdToken failed', error);
     return null;

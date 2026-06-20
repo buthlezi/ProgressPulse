@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, use } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { Dimensions, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';

@@ -47,7 +47,8 @@ It focuses on simplicity and momentum — quick entries, clear streaks, and reli
 | ---------------------- | -------------------------------------------------------- |
 | **Frontend**           | React Native · Expo · Expo Router · TypeScript           |
 | **State & Storage**    | Expo SQLite (local) · Expo SecureStore                   |
-| **Authentication**     | AWS Cognito (custom integration)                         |
+| **Authentication**     | AWS Cognito (custom implementation)                      |
+| **Sync Strategy**      | Offline-first with eventual consistency                  |
 | **Backend**            | AWS Lambda · DynamoDB · API Gateway                      |
 | **Build & Deployment** | EAS Build · Android Studio                               |
 
@@ -61,7 +62,7 @@ app/
     _layout.tsx         # Root layout (navigation + providers) 
     index.tsx           # Home screen 
   entry/ 
-    _layout.tsx 
+    _layout.tsx         # Shared layout for entry screens
     AppButton.tsx       # Reusable button component 
     settings.tsx        # Settings screen 
     sign-in.tsx         # Authentication screen 
@@ -170,7 +171,7 @@ npx expo run:android
 
 ---
 
-## 🔮 Next Steps
+## 🔮 Roadmap
 
 - 🔔 Integrate daily reminder notifications
 - 🧾 Export data (CSV / PDF)
@@ -179,6 +180,35 @@ npx expo run:android
 - 🤖 AI-powered insights (future vision)
 
 ---
+
+## 💡 Why I Built This
+
+I built ProgressPulse to solve a simple problem I kept running into:
+
+Staying consistent is hard — not because of lack of motivation, but because most tools are either too complex or too easy to ignore.
+
+I wanted something that:
+
+* takes **seconds to use**
+* works **even without internet**
+* makes progress feel **visible and real**
+
+Most habit trackers focus on long-term goals, but I was more interested in **daily momentum** — small wins that compound over time.
+
+From an engineering perspective, this project was also an opportunity to:
+
+* Design an **offline-first architecture** using SQLite
+* Implement a **custom authentication flow** with AWS Cognito
+* Build a **scalable sync layer** with Lambda + DynamoDB
+* Structure a React Native app for **long-term maintainability**
+
+ProgressPulse is located at the intersection of **product thinking** and **engineering discipline** —
+a tool designed to be simple on the surface, but thoughtfully built underneath.
+
+---
+
+> The goal isn’t perfection — it’s showing up, every day.
+
 
 ## 👤 About
 
