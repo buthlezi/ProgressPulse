@@ -6,6 +6,7 @@ import { useThemeColors } from '../lib/context/ThemeProviderContext';
 import { BarChart, LineChart } from 'react-native-chart-kit';
 import { Entry, listEntries } from '../lib/entries';
 import { initDb } from '../lib/db';
+import { exportEntriesToCsv } from '../lib/exportCsv';
 
 export default function Stats() {
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -190,8 +191,8 @@ export default function Stats() {
       <View style={{ height: 8 }} />
       <Pressable
         accessibilityRole="button"
-        onPress={() => {
-          /* TODO: wire up export after SQLite */
+        onPress={async () => {
+          await exportEntriesToCsv();
         }}
         style={{
           alignSelf: 'flex-start',
